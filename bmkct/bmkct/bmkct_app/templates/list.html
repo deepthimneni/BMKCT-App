@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
+    <div class="jumbotron">
+        <div class="row">
+            {% for item in group_list %}
+            <div class="col-sm-12 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        {{ item.group_name }} - {{ item.box_name }}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ item.description }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary btn-sm">Share</button>
+                        <button type="button" class="btn btn-primary btn-sm">Like</button>
+                        <div class="list-icons">
+                            <i class="fa fa-thumbs-up medium-icon"></i> <span class="timer counter alt-font appear">5</span>
+                            <i class="fa fa-share medium-icon"></i> <span class="timer counter alt-font appear">20</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
