@@ -1,15 +1,51 @@
 {% extends 'base.html' %} {% block content %}
+
+<script>
+    function addGroup() {
+        var content = prompt("Please Enter Conent", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec semper, leo sit amet varius ullamcorper, odio felis finibus sapien, et molestie elit purus vitae est. Aenean diam erat, interdum et suscipit et, hendrerit et arcu. Nulla gravida, metus et auctor feugiat, magna magna efficitur tellus, sit amet blandit libero urna ut lectus.")
+        debugger;
+        if (content != null && content != "") {
+            var id = window.location.pathname.split('/').filter(Boolean)[1];
+            var label = window.location.pathname.split('/').filter(Boolean)[0];
+            document.getElementsByName('id')[0].value = id;
+            document.getElementsByName('label')[0].value = label;
+            document.getElementsByName('content')[0].value = content;
+            document.forms['add-box'].submit();
+            // window.location.pathname = "/add-box/" + id + "/" + label + "?content=" + btoa(content);
+        }
+    }
+</script>
+
+<form method="POST" class="post-form" name="add-box" action="/add-box">
+    {% csrf_token %}
+    <input type="hidden" name="id" />
+    <input type="hidden" name="label" />
+    <input type="hidden" name="content" />
+</form>
+
+
 <div class="container mt-4">
-    <div class="jumbotron">
+    <div class="jumbotron" style="position: relative;">
+        <button type="button" class="btn btn-primary" onclick="addGroup();" style="position:absolute;top:10px;right:10px">Add</button>
         <div class="row">
             {% for item in group_list %}
             <div class="col-sm-12 col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header">
-                        {{ item.group_name }} - {{ item.box_name }}
+                        {{ group_name }} - {{ item.Box_Label }}
+                        <div class="box-icons" style="display: inline-flex;float: right;">
+                            <a href="" class="icon-block" style="margin-right: 10px;">
+                                <i class="fa fa-pencil-square-o float-right" style="cursor: pointer;"></i>
+                            </a>
+                            <a href="" class="icon-block">
+                                <i class="fa fa-times float-right" style="cursor: pointer;"></i>
+                            </a>
+                        </div>
+
                     </div>
                     <div class="card-body">
-                        <p class="card-text">{{ item.description }}</p>
+
+                        <p class="card-text">{{ item.Box_Content }}</p>
                     </div>
                     <div class="card-footer">
                         <button type="button" class="btn btn-primary btn-sm">Share</button>

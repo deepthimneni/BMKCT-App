@@ -1,34 +1,28 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .dbaccess import *
+import base64
 
 # Create your views here.
 def index(request):
-    groups = ["Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2", "Some-Text-1", "Some-Text-2"]
+    groups = exec_sql_get_data(Sql_Queries.GET_ALL_SOME_TEXTS.value, [])
     return render(request, 'index.html', {'groups': groups})
 
-def group_list(request, group):
-    group_list = [{
-        'group_name': 'Some-Text-1',
-        'box_name': 'Box-1',
-        'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec semper, leo sit amet varius ullamcorper, odio felis finibus sapien, et molestie elit purus vitae est. Aenean diam erat, interdum et suscipit et, hendrerit et arcu. Nulla gravida, metus et auctor feugiat, magna magna efficitur tellus, sit amet blandit libero urna ut lectus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse magna odio, mollis at sem in, scelerisque convallis est. Vestibulum vitae purus lacinia, auctor ex et, aliquet nisl. Nam quam quam, imperdiet quis urna eu, rhoncus congue augue.'
-    },
-    {
-        'group_name': 'Some-Text-1',
-        'box_name': 'Box-1',
-        'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec semper, leo sit amet varius ullamcorper, odio felis finibus sapien, et molestie elit purus vitae est. Aenean diam erat, interdum et suscipit et, hendrerit et arcu. Nulla gravida, metus et auctor feugiat, magna magna efficitur tellus, sit amet blandit libero urna ut lectus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse magna odio, mollis at sem in, scelerisque convallis est. Vestibulum vitae purus lacinia, auctor ex et, aliquet nisl. Nam quam quam, imperdiet quis urna eu, rhoncus congue augue.'
-    },
-    {
-        'group_name': 'Some-Text-1',
-        'box_name': 'Box-1',
-        'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec semper, leo sit amet varius ullamcorper, odio felis finibus sapien, et molestie elit purus vitae est. Aenean diam erat, interdum et suscipit et, hendrerit et arcu. Nulla gravida, metus et auctor feugiat, magna magna efficitur tellus, sit amet blandit libero urna ut lectus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse magna odio, mollis at sem in, scelerisque convallis est. Vestibulum vitae purus lacinia, auctor ex et, aliquet nisl. Nam quam quam, imperdiet quis urna eu, rhoncus congue augue.'
-    },
-    {
-        'group_name': 'Some-Text-1',
-        'box_name': 'Box-1',
-        'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec semper, leo sit amet varius ullamcorper, odio felis finibus sapien, et molestie elit purus vitae est. Aenean diam erat, interdum et suscipit et, hendrerit et arcu. Nulla gravida, metus et auctor feugiat, magna magna efficitur tellus, sit amet blandit libero urna ut lectus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse magna odio, mollis at sem in, scelerisque convallis est. Vestibulum vitae purus lacinia, auctor ex et, aliquet nisl. Nam quam quam, imperdiet quis urna eu, rhoncus congue augue.'
-    },
-    {
-        'group_name': 'Some-Text-1',
-        'box_name': 'Box-1',
-        'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec semper, leo sit amet varius ullamcorper, odio felis finibus sapien, et molestie elit purus vitae est. Aenean diam erat, interdum et suscipit et, hendrerit et arcu. Nulla gravida, metus et auctor feugiat, magna magna efficitur tellus, sit amet blandit libero urna ut lectus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse magna odio, mollis at sem in, scelerisque convallis est. Vestibulum vitae purus lacinia, auctor ex et, aliquet nisl. Nam quam quam, imperdiet quis urna eu, rhoncus congue augue.'
-    }]
-    return render(request, 'list.html', {'group_list': group_list})
+def group_list(request, group_name, id):
+    group_list = exec_sql_get_data(Sql_Queries.GET_ALL_SOME_TEXT_BOXES.value, [id])
+    return render(request, 'list.html', {'group_list': group_list, 'group_name': group_name})
+
+def delete_group(request, id):
+    exec_sql(Sql_Queries.DELETE_SOME_TEXT.value, [id])
+    return redirect("/")
+
+def add_group(request):
+    exec_sql(Sql_Queries.ADD_SOME_TEXT.value, [])
+    return redirect("/")
+
+def add_box(request):
+    exec_sql(Sql_Queries.ADD_SOME_TEXT_BOX.value, [request.POST['id'], request.POST['content']])
+    return redirect("/" + request.POST['label'] + "/" + str(request.POST['id']))
+    # base64_bytes = request.POST['content'].encode('ascii')
+    # message_bytes = base64.b64decode(base64_bytes)
+    # message = message_bytes.decode('ascii')
+    

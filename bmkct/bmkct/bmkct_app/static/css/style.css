@@ -6,3 +6,18 @@ body {
     display: inline;
     float: right;
 }
+
+
+/* 
+label,
+input {
+    display: block;
+}
+
+span.helptext {
+    display: none;
+} */
+
+a.icon-block {
+    float: right;
+}
