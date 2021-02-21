@@ -31,10 +31,9 @@ def dictfetchall(cursor):
 
 class Sql_Queries(Enum):
     GET_ALL_SOME_TEXTS = """
-    select concat("Some_Text_", (@r := @r + 1)) Some_Text_Label,
+    select "Some_Text_" || (ROW_NUMBER() OVER(ORDER BY Id ASC)) Some_Text_Label,
     t.Id
-    from tbl_some_text t,
-    (select @r := 0) r
+    from tbl_some_text t
     WHERE t.Is_Deleted = 0
     """
     DELETE_SOME_TEXT = """
@@ -60,16 +59,10 @@ class Sql_Queries(Enum):
         t.Id,
         t.Some_Text_Id,
         t.Box_Content,
-        concat("Box_", (
-        CASE WHEN t.Some_Text_Id = @last_text_id
-            THEN @r := @r + 1
-            ELSE @r := 1
-        END
-        )) Box_Label,
-        @last_text_id := t.Some_Text_Id
+        "Box_" || (ROW_NUMBER() OVER(ORDER BY Id ASC)) Box_Label
+        
     FROM 
-        bmkct.tbl_some_text_box t,
-    (select @r := 0, @last_text_id := 0) r
+        tbl_some_text_box t
     WHERE t.Is_Deleted = 0 AND t.Some_Text_Id = %s
     """
     UPDATE_SOME_TEXT_BOX = """
